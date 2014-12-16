@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Cocos2d-JS</title>
+    <link rel="stylesheet" href="./styles/index.css"/>
+</head>
+<body>   
+    <canvas id="gameCanvas" width="800" height="450"></canvas>
+    <!--<div id="startPage">-->
+        <!--<p id="startBut">START</p>-->
+    <!--</div>-->
+    <script type="text/javascript" src="./src/cocos2d-js-v3.1.js" charset="UTF-8"></script>
+    <script>
+        var newScriptNode = document.createElement("script");
+        newScriptNode.src = "./src/main.js?timestamp="+ Math.random();
+        document.getElementsByTagName("body")[0].appendChild(newScriptNode);
+    </script>
+</body>
+</html>
