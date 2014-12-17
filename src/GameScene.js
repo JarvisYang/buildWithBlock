@@ -7,10 +7,13 @@ var GameScene = cc.Scene.extend({
     moveSpeed:1,
     RIGHT :1,
     LEFT:-1,
-    blockHeight:80,
-    stopHeight:0,
+    blockHeight:50,
+    stopHeight:100,
     blocksHeader:-1,
     needRemoveBlock:false,
+    blocksShowNum:2,
+    startHeight:0,
+    randomHeight:0,
     ctor:function(){
         this._super();
 
@@ -20,35 +23,55 @@ var GameScene = cc.Scene.extend({
         this.x = 0;
         this.y = 0;
 
-        this.bgLayer = new cc.LayerColor(cc.color(23, 198, 229),this.size.width,this.size.height);
+        this.bgLayer = new cc.Sprite(res.gameBg,cc.rect(0,0,this.size.width,this.size.height));
         this.bgLayer.attr({
+            x:this.size.width/2,
+            y:this.size.height/2,
+            width:this.size.width,
+            height:this.size.height,
+            ignoreAnchorPointForPosition: false,
+            color:cc.color(103, 170, 222)
+        });
+
+        this.bottomSprite = new cc.Sprite(res.gameBottom,cc.rect(0,0,this.size.width,this.stopHeight));
+        this.bottomSprite.attr({
             x:0,
             y:0,
-            ignoreAnchorPointForPosition: false,
-            color:cc.color(0, 198, 229)
+            width:this.size.width,
+            height:this.stopHeight,
+            anchorX:0,
+            anchorY: 0
         });
     },
     onEnter:function(){
         console.log(this);
         this._super();
         this.addChild(this.bgLayer);
+        this.addChild(this.bottomSprite);
         var  obj = this;
+        if(!this.isStart){
+            setTimeout(function(){
+                obj.gameStart();
+            },800);
+            this.isStart = true;
+        }
         cc.eventManager.addListener({
             event:cc.EventListener.TOUCH_ONE_BY_ONE,
             onTouchBegan:function(touch, event){
                 if(obj.isRuning){
                     var block = obj.blocks[obj.blocksHeader];
-                    if(block.canTouch){
-                        obj.blockMoveDown(block);
+                    if(block.canTouch) {
+                        var target = event.getCurrentTarget();
+                        var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                        var rect = cc.rect(block.x - 20, block.y - 10 , block.width + 40, block.height + 20);
+                        if (cc.rectContainsPoint(rect, locationInNode)) {
+                            obj.blockMoveDown(block);
+                            return true;
+                        }
+                        return false;
                     }
                 }
                 return true;
-            },
-            onTouchEnded:function(touch, event){
-                if(!obj.isStart){
-                    obj.gameStart();
-                    obj.isStart = true;
-                }
             }
         },this);
     },
@@ -68,25 +91,33 @@ var GameScene = cc.Scene.extend({
         }
         else if(runningBlock.actionMoveDown.isDone()){
             runningBlock.stopAction(runningBlock.actionMoveDown);
-            this.removeBlock();
+            if(!this.isGameover()){
+                this.removeBlock();
+            }
         }
     },
     blockMoveDown:function(block){
         console.log("blockMoveDown");
         block.canTouch = false;
         block.stopAction(block.actionHorizon);
-        var actionMoveDown = cc.moveTo(0.6,cc.p(block.x,this.stopHeight)).easing(cc.easeOut(0.4));
+        var actionMoveDown = cc.moveTo(block.y/(this.size.height - this.stopHeight)* 0.5,cc.p(block.x,this.stopHeight)).easing(cc.easeOut(0.4));
         block.actionMoveDown = actionMoveDown;
         block.runAction(actionMoveDown);
     },
     addBlock:function(){
         console.log("addBlock");
-        var block = new cc.Sprite(res.block);
-        var randomWidth = cc.randomMinus1To1();
-        var blockWidth = 250 + randomWidth*80;
-        var blockY = this.size.height - 100;
 
         //init the new block
+        var block = new cc.Sprite(res.block);
+        var randomWidth = cc.randomMinus1To1();
+        var blockWidth = 150 + randomWidth*60;
+
+        if(!this.needRemoveBlock){
+            this.startHeight = this.stopHeight + this.blockHeight + 100;
+            this.randomHeight = this.size.height - this.blockHeight*2 - this.stopHeight - 100;
+        }
+
+        var blockY = this.startHeight + this.randomHeight*cc.random0To1();
         block.moveDir = randomWidth > 0?this.RIGHT:this.LEFT;
 
         block.attr({
@@ -111,7 +142,7 @@ var GameScene = cc.Scene.extend({
         this.blocks.push(block);
         this.bgLayer.addChild(block);
         this.blocksHeader++;
-        if(!this.needRemoveBlock && this.blocksHeader >= 2){
+        if(!this.needRemoveBlock && this.blocksHeader >= this.blocksShowNum){
             this.needRemoveBlock = true;
         }
     },
@@ -120,7 +151,7 @@ var GameScene = cc.Scene.extend({
         this.unscheduleAllCallbacks();
         if(this.needRemoveBlock){
             var obj = this;
-            for(var i = 0 ; i < 3 ; i++){
+            for(var i = 0 ; i <= obj.blocksShowNum ; i++){
                 (function(i){
                     var block = obj.blocks[obj.blocksHeader - i];
                     var action = cc.moveTo(0.2,cc.p(block.x,block.y - obj.blockHeight)).easing(cc.easeOut(0.5));
@@ -134,8 +165,8 @@ var GameScene = cc.Scene.extend({
                     && obj.blocks[obj.blocksHeader - 2].removeAction.isDone()){
                     var objBlocksHeader = obj.blocksHeader;
                     var objBlocks = obj.blocks;
-                    objBlocks[objBlocksHeader - 2].removeFromParent();
-                    objBlocks[objBlocksHeader - 2] = null;
+                    objBlocks[objBlocksHeader - obj.blocksShowNum].removeFromParent();
+                    objBlocks[objBlocksHeader - obj.blocksShowNum] = null;
                     obj.stopHeight = objBlocks[objBlocksHeader].y + obj.blockHeight;
                     obj.addBlock();
                     obj.schedule(obj.gameRun,0.002);
@@ -147,5 +178,23 @@ var GameScene = cc.Scene.extend({
             this.addBlock();
             this.schedule(this.gameRun,0.002);
         }
+    },
+    isGameover:function(){
+        console.log("isGameover");
+        var blockFirst = this.blocks[this.blocksHeader];
+        var blockSecond = this.blocks[this.blocksHeader - 1];
+        if(!this.blocksHeader){
+            return false;
+        }
+        if((blockFirst.x + blockFirst.width) <= blockSecond.x
+            || blockFirst.x >= (blockSecond.x + blockSecond.width)){
+            this.unscheduleAllCallbacks();
+            console.log("game over");
+            return true;
+        }
+        return false;
+    },
+    gameOver:function(){
+
     }
 });
