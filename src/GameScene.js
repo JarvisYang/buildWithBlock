@@ -82,8 +82,9 @@ var GameScene = cc.Scene.extend({
         this.schedule(this.gameRun,0.002);
     },
     gameRun:function(){
-        console.log("gameRun");
+
         var runningBlock = this.blocks[this.blocksHeader];
+        console.log("gameRun",runningBlock.canTouch);
         if(runningBlock.canTouch){
             if(runningBlock.actionHorizon.isDone()){
                 this.blockMoveDown(runningBlock);
@@ -196,8 +197,8 @@ var GameScene = cc.Scene.extend({
         return false;
     },
     gameOver:function(){
+        this.bgLayer.removeAllChildren();
         this.blocks = [];
-        this.size = {};
         this.isStart = false;
         this.isRuning = false;
         this.isEnd = false;
