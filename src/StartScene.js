@@ -25,12 +25,13 @@ var StartScene = cc.Scene.extend({
             anchorY:1,
             color:cc.color(255,255,255)
         });
+
+        this.addChild(this.bgLayer,0);
+        this.addChild(this.alert);
     },
     onEnter:function(){
         this._super();
-        this.addChild(this.bgLayer,0);
         this.addChild(module.startButton);
-        this.addChild(this.alert);
     },
     sceneLeave:function(){
         var size = cc.winSize;

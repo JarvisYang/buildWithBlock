@@ -42,12 +42,12 @@ var GameScene = cc.Scene.extend({
             anchorX:0,
             anchorY: 0
         });
-    },
-    onEnter:function(){
-        console.log(this);
-        this._super();
+
         this.addChild(this.bgLayer);
         this.addChild(this.bottomSprite);
+    },
+    onEnter:function(){
+        this._super();
         var  obj = this;
         if(!this.isStart){
             setTimeout(function(){
@@ -189,12 +189,24 @@ var GameScene = cc.Scene.extend({
         if((blockFirst.x + blockFirst.width) <= blockSecond.x
             || blockFirst.x >= (blockSecond.x + blockSecond.width)){
             this.unscheduleAllCallbacks();
+            this.gameOver();
             console.log("game over");
             return true;
         }
         return false;
     },
     gameOver:function(){
-
+        this.blocks = [];
+        this.size = {};
+        this.isStart = false;
+        this.isRuning = false;
+        this.isEnd = false;
+        this.moveSpeed = 1;
+        this.stopHeight = 100;
+        this.blocksHeader = -1;
+        this.needRemoveBlock = false;
+        this.startHeight = 0;
+        this.randomHeight = 0;
+        cc.director.runScene(new cc.TransitionFade(0.5, module.startScene,cc.color(255,255,255)) )
     }
 });

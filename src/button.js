@@ -67,16 +67,14 @@ var Button = cc.LayerColor.extend({
 //                        obj.bgColor[1] - 20,
 //                        obj.bgColor[2] - 20);
 
-                if(event.getCurrentTarget().__instanceId == module.startButton.__instanceId){
-
-                }
                 //module.startScene.alert.string = "touchEnd";
                 obj.outLayer.color = cc.color(obj.bgColor[0],
                     obj.bgColor[1],
                     obj.bgColor[2]);
                 obj.menu.color = cc.color(255,255,255);
 
-                cc.director.runScene(new cc.TransitionZoomFlipX(0.5, module.gameScene) )
+                cc.director.runScene(new cc.TransitionZoomFlipX(0.5, module.gameScene) );
+                obj.removeFromParent();
 
                 return true;
             }
