@@ -366,17 +366,18 @@ var GameScene = cc.Scene.extend({
         return false;
     },
     gameOver:function(){
-        console.log("gameOver")
+        console.log("gameOver");
+        var score = this.blocksHeader + 1;
+        module.score = score;
+        module.bestScore = module.bestScore < score? score :module.bestScore;
         var obj = this;
         setTimeout(function(){
             obj.reset();
-            cc.director.runScene(new cc.TransitionFade(1.5, module.startScene,cc.color(255,255,255)) );
+            cc.director.runScene(new cc.TransitionFade(1.5, module.restartScene,cc.color(255,255,255)) );
         },1500)
 
     },
     reset:function(){
-        var score = this.blocksHeader + 1;
-        module.bestScore = module.bestScore < score? score :module.bestScore;
         this.gameLayer.removeAllChildren();
         this.removeBlockStaticShape();
         this.space.removeShape(this.physicsBlock.shape);
