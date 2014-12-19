@@ -8,6 +8,7 @@
         "src/resource.js",
         "src/StartScene.js",
         "src/GameScene.js",
+        "src/RestartScene.js",
         "src/module.js"
     ]
 }
