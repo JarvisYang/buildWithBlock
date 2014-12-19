@@ -9,7 +9,7 @@ var RestartScene = cc.Scene.extend({
     		x:this.size.width/2,
     		y:this.size.height/2,
     		width:this.size.width,
-    		height:this.size.height,
+    		height:this.size.height
     	});
 
     	this.restartBut = new cc.Sprite(res.restartBut);

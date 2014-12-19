@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello Cocos2d-JS</title>
-    <link rel="stylesheet" href="./styles/index.css"/>
+    <title>你丫还不搬砖！！</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="shortcut icon" href="./res/icon.png">
+    <style type="text/css">
+        body, canvas, div {-moz-user-select: none;-webkit-user-select: none;-ms-user-select: none;-khtml-user-select: none;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);background-color: #000;
+        }
+    </style>
 </head>
-<body>   
+<body>
     <canvas id="gameCanvas" width="800" height="450"></canvas>
     <!--<div id="startPage">-->
         <!--<p id="startBut">START</p>-->
     <!--</div>-->
-    <script type="text/javascript" src="./src/cocos2d-js-v3.1.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="./game.min.js" charset="UTF-8"></script>
+    <script src= "http://static.api.5miao.com/js/api.js" ></script>
+    <script type="text/javascript" src="./src/api.js" charset="UTF-8">
+    </script>
     <script>
         var newScriptNode = document.createElement("script");
         newScriptNode.src = "./src/main.js?timestamp="+ Math.random();

@@ -1,14 +1,8 @@
 {
-    "debugMode"     : 1,
-    "showFPS"       :true,
     "frameRate"     : 60,
     "id"            : "gameCanvas",
     "renderMode"    : 1,
     "jsList"        : [
-        "src/resource.js",
-        "src/StartScene.js",
-        "src/GameScene.js",
-        "src/RestartScene.js",
-        "src/module.js"
+        "src/resource.js"
     ]
 }

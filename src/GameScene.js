@@ -97,20 +97,13 @@ var GameScene = cc.Scene.extend({
                 if(obj.isRuning){
                     var block = obj.blocks[obj.blocksHeader];
                     if(block.canTouch) {
-//                        var target = event.getCurrentTarget();
-//                        var locationInNode = target.convertToNodeSpace(touch.getLocation());
-//                        var rect = cc.rect(block.x - 30, block.y - 20 , block.width + 60, block.height + 40);
-//                        if (cc.rectContainsPoint(rect, locationInNode)) {
-                            console.log("TOUCH");
-                            if(obj.isGameover()){
-                                obj.addPhysicsBlock();
-                            }
-                            else{
-                                obj.blockMoveDown(block);
-                            }
-                            return true;
-//                        }
-//                        return false;
+                        if(obj.isGameover()){
+                            obj.addPhysicsBlock();
+                        }
+                        else{
+                            obj.blockMoveDown(block);
+                        }
+                        return true;
                     }
                 }
                 return true;
@@ -147,21 +140,15 @@ var GameScene = cc.Scene.extend({
         this.space.addStaticShape(this.CPgroundShape);
         this.space.addStaticShape(this.walls[0]);
         this.space.addStaticShape(this.walls[1]);
-
-        this._debugNode = new cc.PhysicsDebugNode(this.space);
-        this.addChild(this._debugNode, 10);
     },
     gameStart:function(){
-        console.log("gameStart");
         this.isRuning = true;
         this.addBlock();
         this.scheduleUpdate();
-        // this.schedule(this.gameRun,0.002);
     },
     update:function(dt){
         this.space.step(dt);
         var runningBlock = this.blocks[this.blocksHeader];
-        //console.log("gameRun",runningBlock.canTouch);
         switch(true){
             case this.isRuning:
                 if(runningBlock.canTouch){
@@ -184,7 +171,6 @@ var GameScene = cc.Scene.extend({
         }
     },
     blockMoveDown:function(block){
-        console.log("blockMoveDown");
         block.canTouch = false;
         block.stopAction(block.actionHorizon);
         var actionMoveDown = cc.moveTo(block.y/(this.size.height - this.stopHeight)* 0.5,cc.p(block.x,this.stopHeight)).easing(cc.easeOut(0.4));
@@ -192,8 +178,6 @@ var GameScene = cc.Scene.extend({
         block.runAction(actionMoveDown);
     },
     addBlock:function(){
-        console.log("addBlock");
-
         //init the new block
         var randomWidth = cc.randomMinus1To1();
         var blockWidth = 100 + randomWidth*30;
@@ -245,8 +229,6 @@ var GameScene = cc.Scene.extend({
         }
     },
     addPhysicsBlock:function(){
-        console.log("addPhysicsBlock")
-
         var block = this.blocks[this.blocksHeader];
         var width = block.width;
         var elasticity = 0;
@@ -266,8 +248,6 @@ var GameScene = cc.Scene.extend({
         this.physicsBlock.attr({
             height:this.blockHeight,
             width:width,
-            // y:blockY,
-            // x:block.moveDir > 0?-blockWidth:this.size.width,
             anchorX:0.5,
             anchorY:0.5
         });
@@ -315,7 +295,6 @@ var GameScene = cc.Scene.extend({
         }
     },
     removeBlock:function(){
-        console.log("removeBlock");
         this.unscheduleAllCallbacks();
         if(this.needRemoveBlock){
             var obj = this;
@@ -337,7 +316,6 @@ var GameScene = cc.Scene.extend({
                     objBlocks[objBlocksHeader - obj.blocksShowNum] = null;
                     obj.stopHeight = objBlocks[objBlocksHeader].y + obj.blockHeight;
                     obj.addBlock();
-                    // obj.schedule(obj.gameRun,0.002);
                     obj.scheduleUpdate();
                 }
             },300);
@@ -345,12 +323,10 @@ var GameScene = cc.Scene.extend({
         else{
             this.stopHeight = this.blocks[this.blocksHeader].y + this.blockHeight;
             this.addBlock();
-            // this.schedule(this.gameRun,0.002);
             this.scheduleUpdate();
         }
     },
     isGameover:function(){
-        console.log("isGameover");
         var blockFirst = this.blocks[this.blocksHeader];
         var blockSecond = this.blocks[this.blocksHeader - 1];
         if(!this.blocksHeader){
@@ -360,14 +336,12 @@ var GameScene = cc.Scene.extend({
              this.isRuning = false;
              this.isEnd = true;
              this.gameOver();
-            //console.log("game over");
             return true;
         }
         return false;
     },
     gameOver:function(){
-        console.log("gameOver");
-        var score = this.blocksHeader + 1;
+        var score = this.blocksHeader;
         module.score = score;
         module.bestScore = module.bestScore < score? score :module.bestScore;
         var obj = this;
