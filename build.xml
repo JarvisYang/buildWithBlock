@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="BuildWidthBlock" basedir="/home/jarvis/code/github/buildWithBlock/" default="compile"  >
+<project name="BuildWidthBlock" basedir="./" default="compile"  >
 
     <!-- The classpath should be modified to the real closure compiler jar file path -->
     <taskdef name="jscomp"  classname="com.google.javascript.jscomp.ant.CompileTask" classpath="./compiler.jar"/>
@@ -8,7 +8,7 @@
                 debug="true" languageIn="ECMASCRIPT5" output="game.min.js">
                 <!-- Uncomment the line below to enable sourcemap generation -->
             <!--sourceMapOutputFile="./cocos2d-js-sourcemap" sourceMapFormat="V3"> -->
-            <sources dir="/home/jarvis/code/github/buildWithBlock/src/">
+            <sources dir="./src/">
                 <!-- You may need to modify the file name to the actual downloaded file name -->
                 <file name="cocos2d-js-v3.1.js"/>
                 <file name="StartScene.js"/>

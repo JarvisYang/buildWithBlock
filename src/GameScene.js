@@ -343,13 +343,33 @@ var GameScene = cc.Scene.extend({
     gameOver:function(){
         var score = this.blocksHeader;
         module.score = score;
-        module.bestScore = module.bestScore < score? score :module.bestScore;
+        if(module.bestScore < score){
+            module.bestScore = score;
+            this.changeTitle(score);
+        }
         var obj = this;
         setTimeout(function(){
             obj.reset();
             cc.director.runScene(new cc.TransitionFade(1.5, module.restartScene,cc.color(255,255,255)) );
         },1500)
 
+    },
+    changeTitle:function(score){
+        console.log(score);
+        switch (true){
+            case score <= 10:
+                document.title = "【你丫还不搬砖！！】今天我只搬了" + score + "块砖，老板克扣了我工资";
+                break;
+            case score <=25 && score >10:
+                document.title = "【你丫还不搬砖！！】我今天搬了" + score + "块砖，老板很开心地给了我一个馒头";
+                break;
+            case score <=40 && score >25:
+                document.title = "【你丫还不搬砖！！】我今天搬了" + score + "块砖，老板特意给我的午饭加了块肉";
+                break;
+            case score > 40:
+                document.title = "【你丫还不搬砖！！】我今天搬了" + score + "块砖，老板破例请了我一个大鸡腿！！";
+                break;
+        }
     },
     reset:function(){
         this.gameLayer.removeAllChildren();
